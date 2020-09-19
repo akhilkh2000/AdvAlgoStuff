@@ -4,7 +4,10 @@
 typedef struct node {
 	int key;
 	int value;
-	struct node* left, *right, *parent;
+	struct node* left;
+	struct node* right;
+	struct node* parent;
+
 } node;
 
 typedef struct dict {
@@ -30,13 +33,13 @@ void* make_new_dictionary() {
 	return d;
 }
 
-node*rotateLeft(dict*d, node* x) {
+void rotateLeft(dict*d, node* x) {
 	node* temp = x -> right;
 	//left child of temp becomes right child of x
 	x-> right = temp ->left;
 
 	//also now temp's parent becomes x
-	temp -> parent = x;
+	temp -> parent = x -> parent;
 
 	//if x has no parent initially
 	if (x -> parent == NULL) {
@@ -60,10 +63,9 @@ node*rotateLeft(dict*d, node* x) {
 
 	temp -> left =  x;
 	x -> parent = temp;
-	return temp;
 }
 
-node*rotateRight(dict* d, node* x) {
+void rotateRight(dict* d, node* x) {
 	node* temp = x -> left;
 	//right child of temp becomes left child of x
 	x->left = temp->right;
@@ -94,61 +96,10 @@ node*rotateRight(dict* d, node* x) {
 	//this comes to root position and its right child becomes x
 	temp -> right  =  x;
 	x -> parent = temp;
-	return  temp;
 
 }
 
-// node* splay(node* root, int k) {
-// 	if (!root || root ->key == NULL)
-// 		return root;
-// 	if (k < root->key) {
-// 		//left subtree
-// 		if (!root -> left) return root;
 
-// 		//left-left
-// 		if (k < root->left->key) {
-// 			//recursively splay till key comes to root->left->left
-// 			root->left->left = splay(root->left->left, k);
-// 			//do one right rotation
-// 			root = rotateRight(root);
-
-// 		}
-// 		else if (k > root->left->key) { //left - right
-// 			root -> left -> right = splay(root -> left ->right, k);
-// 			if (root ->left -> right)
-// 				root -> left = rotateLeft(root->left);
-
-// 		}
-
-// 		if (root -> left == NULL) return root; //only one rotation
-// 		else
-// 			//second rotation
-// 			return rotateRight(root);
-// 	}
-// 	else {
-
-// 		// in right subtree
-// 		if (!root -> right) return root;
-
-// 		if (k > root -> right -> key) { //right right
-
-// 			root -> right -> right = splay(root -> right->right, k);
-// 			root = rotateLeft(root); //first left rot
-// 		}
-
-// 		else if (k < root->right->key) { //right-left
-// 			root -> right -> left = splay(root -> right -> left, k);
-// 			if (root->right->left)
-// 				root->right = rotateRight(root->right);
-// 		}
-
-// 		if (root -> right == NULL)
-// 			return root;
-// 		return rotateLeft(root);
-
-// 	}
-
-// }
 
 
 void splay(void* d, node* n) {
@@ -203,6 +154,7 @@ void splay(void* d, node* n) {
 
 
 }
+
 int find(void * d, int k) {
 	//returns value if present else -1
 	dict* D = (dict*)d;
@@ -221,6 +173,36 @@ int find(void * d, int k) {
 	return -1;
 }
 
+void insert_helper(dict *t, node*n)
+{
+	node *y = NULL;
+	node *temp = t->root;
+	while (temp != NULL)
+	{
+		y = temp;
+		if (n->key == temp->key)
+		{
+			temp->value = n->value;
+			return;
+		}
+		if (n->key < temp->key)
+			temp = temp->left;
+		else
+			temp = temp->right;
+	}
+	n->parent = y;
+
+	if (y == NULL) //newly added node is root
+		t->root = n;
+	else if (n->key < y->key)
+		y->left = n;
+	else
+		y->right = n;
+
+	splay(t, n);
+}
+
+
 void insert(void* d, int key, int value) {
 	dict* D = (dict*)d;
 	node* newNode = new_node(key, value);
@@ -228,6 +210,8 @@ void insert(void* d, int key, int value) {
 		printf("HEAP IS FULL ERROR IN CREATING NODE!");
 		exit(1);
 	}
+
+	// insert_helper(D, newNode);
 
 	//nodes made so that actual addresses are not modified / lost
 	node* root = D-> root;
@@ -268,3 +252,56 @@ void insert(void* d, int key, int value) {
 
 
 }
+
+void inorder(dict* d, node* r) {
+	if (r) {
+		inorder(d, r->left);
+		printf("%d\n", r->key);
+		inorder(d, r -> right);
+	}
+}
+
+void preorder(dict*d, node*r) {
+	if (r) {
+		printf("%d\n", r->key);
+		preorder(d, r -> left);
+		preorder(d, r->right);
+
+	}
+}
+// int main() {
+
+// 	dict* d = make_new_dictionary();
+
+// 	//node *a, *b, *c, *d, *e, *f, *g, *h, *i, *j, *k, *l, *m;
+// 	insert(d, 15, 10);
+// 	printf("root %d\n", d->root->key);
+// 	insert(d, 10, 20);
+// 	printf("root %d\n", d->root->key);
+// 	insert(d, 17, 30);
+// 	printf("root %d\n", d->root->key);
+// 	insert(d, 7, 100);
+// 	printf("root %d\n", d->root->key);
+// 	insert(d, 13, 90);
+// 	printf("root %d\n", d->root->key);
+// 	insert(d, 16, 40);
+// 	// insert(d, 50, 50);
+// 	// insert(d, 60, 60);
+// 	// insert(d, 70, 70);
+// 	// insert(d, 80, 80);
+// 	// insert(d, 150, 150);
+// 	// insert(d, 110, 110);
+// 	// insert(d, 120, 120);
+
+
+// 	inorder(d, d->root);
+
+// 	printf("\npreoder\n");
+// 	preorder(d, d->root);
+
+
+
+
+// }
+
+
