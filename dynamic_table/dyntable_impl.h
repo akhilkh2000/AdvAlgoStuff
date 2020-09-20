@@ -13,4 +13,6 @@ void push_back(void**, int);
 // Decrease factor should be 0.25
 void pop_back(void**);
 
+int getCount();
+
 #endif

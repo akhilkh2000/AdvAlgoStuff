@@ -22,6 +22,7 @@ long timer_end(struct timespec start_time) {
 
 
 int main() {
+	long time_taken = 0;
 	void* dt = make_new_dynamic_table(10);
 	for (int i = 1; i <= BENCHMARK_COUNT; ++i) {
 		struct timespec vartime = timer_start();
@@ -32,6 +33,19 @@ int main() {
 			pop_back(&dt);
 		}
 		long time_elapsed_nanos = timer_end(vartime);
+		time_taken += time_elapsed_nanos;
 		printf("%ld\n", time_elapsed_nanos);
+
 	}
+
+	printf("%ld is the time taken\n", time_taken);
+	// printf("%ld is the avg timetaken\n", time_taken / BENCHMARK_COUNT);
+	// printf("%d is the count\n", getCount());
+
+	// printf("Time taken to execute -\n", );
+
+	//printf("Copy-count: %d\n", getCount());
+
+	return 0;
+
 }
