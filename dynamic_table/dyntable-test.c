@@ -4,13 +4,12 @@
 #include "dyntable_impl.h"
 
 // static float 0.25 = 0.25;
-// const float push_threshold_factor = 0.75;
-// const float pop_threshold_factor = 0.5;
 
 
-double push_threshold_factor = 0.75;
-double pop_threshold_factor = 0.35;
 
+double push_threshold_factor = 0.85;
+double pop_threshold_factor = 0.15;
+const float decrease_factor = 0.25;
 int copyCount = 0;
 
 typedef struct dynamicTable {
@@ -47,6 +46,7 @@ void push_back(void** dt, int item) {
 	float threshold = Dt -> size / (float) Dt -> capacity;
 	if (threshold >= push_threshold_factor) {
 		//we need to increase by 1.5
+		int oldSize = Dt->size;
 		int newCapacity = (int)ceil((double)Dt -> capacity * 1.5);
 		int* newArr = realloc(Dt->arr, (int)(sizeof(int) * newCapacity));
 		if (newArr == NULL) {
@@ -60,7 +60,7 @@ void push_back(void** dt, int item) {
 
 		// free(Dt->arr);
 		if (Dt->arr != newArr)
-			copyCount++;
+			copyCount += oldSize;
 
 		Dt = *dt;
 		Dt-> arr = newArr;
@@ -70,6 +70,12 @@ void push_back(void** dt, int item) {
 
 	Dt -> arr[Dt->size] = item;
 	Dt -> size = Dt -> size + 1;
+	//printf("%d  %d\n", Dt -> size, Dt -> capacity);
+	// printf("\n");
+	// for ( int i = 0; i < Dt->size; i++) {
+	// 	printf("%d\t", Dt -> arr[i]);
+	// }
+	// printf("\n");
 }
 
 void pop_back(void**dt) {
@@ -89,7 +95,8 @@ void pop_back(void**dt) {
 	float threshold = Dt -> size / (float) Dt -> capacity;
 
 	if (threshold <= pop_threshold_factor) {
-		int newCapacity  = ceil(1.5 * pop_threshold_factor * Dt -> capacity);
+		int oldSize = Dt->size;
+		int newCapacity  = ceil(1.5 * 0.25 * Dt -> capacity);
 		int* newArr = realloc(Dt->arr, (int)(sizeof(int) * newCapacity));
 		if (newArr == NULL) {
 			printf("unable to allocate memory on heap!\n");
@@ -102,15 +109,21 @@ void pop_back(void**dt) {
 
 		// free(Dt->arr);
 		if (Dt->arr != newArr)
-			copyCount++;
+			copyCount += oldSize;
 
 		Dt = *dt;
 		Dt-> arr = newArr;
 		Dt-> capacity = newCapacity;
 
 	}
+	//printf("%d  %d\n", Dt -> size, Dt -> capacity);
 
 
+	// printf("\n");
+	// for ( int i = 0; i < Dt->size; i++) {
+	// 	printf("%d\t", Dt -> arr[i]);
+	// }
+	// printf("\n");
 
 }
 

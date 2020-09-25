@@ -14,6 +14,8 @@ typedef struct dynamicTable {
 
 
 void* make_new_dynamic_table(int n) {
+	if (n == 0)
+		return NULL;
 	dynamicTable* dt = malloc(sizeof(dynamicTable));
 	if (dt == NULL) {
 		//printf("unable to allocate memory on heap!\n");
@@ -30,6 +32,7 @@ void push_back(void** dt, int item) {
 
 
 	dynamicTable*Dt = *dt;
+	if (Dt == NULL) return;
 	// printf("push item : %d\n", item);
 	// printf("size %d\n", Dt->size);
 	if (Dt-> size == Dt ->capacity) {
@@ -37,9 +40,13 @@ void push_back(void** dt, int item) {
 		int newCapacity = (int)ceil((double)Dt -> capacity * 1.5);
 		int* newArr = realloc(Dt->arr, (int)(sizeof(int) * newCapacity));
 		if (newArr == NULL) {
-			printf("unable to allocate memory on heap!\n");
+			//printf("unable to allocate memory on heap!\n");
 			return;
 		}
+
+		//following commented lines were used to test the copyCount in the tests file .
+		//if (Dt->arr != newArr)
+		//	copyCount+= oldSize;
 
 
 		Dt = *dt;
@@ -59,6 +66,7 @@ void pop_back(void**dt) {
 
 	dynamicTable*Dt = *dt;
 	// printf("POP %d\n", Dt->size);
+	if (Dt == NULL) return;
 
 	if (Dt->size == 0)
 		return;
@@ -74,7 +82,12 @@ void pop_back(void**dt) {
 			return;
 		}
 
+		//following commented lines were used to test the copyCount in the tests file .
+		//if (Dt->arr != newArr)
+		//	copyCount+=oldSize;
 
+
+		// we do this as Dt might have been changed inside realloc if it didnt extend memory and internally created new memory and copied contents
 		Dt = *dt;
 		Dt-> arr = newArr;
 		Dt-> capacity = newCapacity;
@@ -84,6 +97,9 @@ void pop_back(void**dt) {
 
 
 }
+
+
+//following lines were just used as personal testging and not part of the submission
 
 // int main() {
 

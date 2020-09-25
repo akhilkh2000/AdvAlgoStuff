@@ -34,6 +34,10 @@ void push_back(void **dt, int item) {
 		temp ->size = size;
 
 		//maybe while realloc Dt might have to undergo a malloc because of no extendable memory in that space so we cant directly assume Dt still points to *dt
+		
+			//following commented lines were used to test the copyCount in the tests file . 
+		//if (Dt->arr != newArr)
+		//	copyCount++;
 
 		*dt = temp;
 		Dt = *dt;
@@ -65,6 +69,11 @@ void pop_back(void**dt) {
 		dynamicTable *temp = realloc(Dt, sizeof(dynamicTable) + sizeof(int) * newCapacity);
 		temp -> capacity = newCapacity;
 		temp ->size = size;
+		
+			//following commented lines were used to test the copyCount in the tests file . 
+		//if (Dt->arr != newArr)
+		//	copyCount++;
+		
 		*dt = temp;
 		Dt = *dt;
 

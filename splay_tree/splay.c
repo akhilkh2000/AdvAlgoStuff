@@ -14,10 +14,16 @@ typedef struct dict {
 	node* root;
 } dict;
 
+//this line was used in test code for statistics
+//int count = 0;
 
 
 node* new_node(int k , int v) {
 	node* newNode = malloc(sizeof(node));
+	//malloc fail
+	if (newNode == NULL)
+		return newNode;
+
 	newNode -> key = k;
 	newNode -> value = v;
 	newNode -> left = NULL;
@@ -29,11 +35,15 @@ node* new_node(int k , int v) {
 
 void* make_new_dictionary() {
 	dict * d = malloc(sizeof(dict));
+	if (d == NULL) {
+		return NULL;
+	}
 	d -> root = NULL;
 	return d;
 }
 
 void rotateLeft(dict*d, node* x) {
+	//count++;
 	node* temp = x -> right;
 	//left child of temp becomes right child of x
 	x-> right = temp ->left;
@@ -66,6 +76,7 @@ void rotateLeft(dict*d, node* x) {
 }
 
 void rotateRight(dict* d, node* x) {
+	//count++;
 	node* temp = x -> left;
 	//right child of temp becomes left child of x
 	x->left = temp->right;
@@ -173,45 +184,15 @@ int find(void * d, int k) {
 	return -1;
 }
 
-void insert_helper(dict *t, node*n)
-{
-	node *y = NULL;
-	node *temp = t->root;
-	while (temp != NULL)
-	{
-		y = temp;
-		if (n->key == temp->key)
-		{
-			temp->value = n->value;
-			return;
-		}
-		if (n->key < temp->key)
-			temp = temp->left;
-		else
-			temp = temp->right;
-	}
-	n->parent = y;
-
-	if (y == NULL) //newly added node is root
-		t->root = n;
-	else if (n->key < y->key)
-		y->left = n;
-	else
-		y->right = n;
-
-	splay(t, n);
-}
-
 
 void insert(void* d, int key, int value) {
 	dict* D = (dict*)d;
 	node* newNode = new_node(key, value);
 	if (!newNode) {
-		printf("HEAP IS FULL ERROR IN CREATING NODE!");
+		//printf("HEAP IS FULL ERROR IN CREATING NODE!");
 		exit(1);
 	}
 
-	// insert_helper(D, newNode);
 
 	//nodes made so that actual addresses are not modified / lost
 	node* root = D-> root;
@@ -227,6 +208,9 @@ void insert(void* d, int key, int value) {
 			//cahnge value and splay it
 			root -> value = value;
 			splay(D, root);
+
+
+
 			free(newNode);
 			return;
 		}
@@ -248,27 +232,41 @@ void insert(void* d, int key, int value) {
 		temp -> right = newNode;
 
 	//now splay this new node to the top
-	splay(D, newNode);
+	 splay(D, newNode);
+	 
+	 
+	// printf("\n Preorder: ");
+	// preorder(D, D->root);
+	// printf("\n Inorder: ");
+	// inorder(D, D->root);
 
 
 }
 
-void inorder(dict* d, node* r) {
-	if (r) {
-		inorder(d, r->left);
-		printf("%d\n", r->key);
-		inorder(d, r -> right);
-	}
-}
+// void inorder(dict* d, node* r) {
+// 	if (r) {
+// 		inorder(d, r->left);
+// 		printf("%d\t", r->key);
+// 		inorder(d, r -> right);
+// 	}
+// }
 
-void preorder(dict*d, node*r) {
-	if (r) {
-		printf("%d\n", r->key);
-		preorder(d, r -> left);
-		preorder(d, r->right);
+// void preorder(dict*d, node*r) {
+// 	if (r) {
+// 		printf("%d\t", r->key);
+// 		preorder(d, r -> left);
+// 		preorder(d, r->right);
 
-	}
-}
+// 	}
+// }
+
+
+
+
+//following lines are for personal testing and not part of submission
+//int getCount() {
+//	return count;
+//}
 // int main() {
 
 // 	dict* d = make_new_dictionary();
@@ -293,6 +291,11 @@ void preorder(dict*d, node*r) {
 // 	// insert(d, 110, 110);
 // 	// insert(d, 120, 120);
 
+// 	printf("%d\n", find(d, 10));
+// 	printf("%d\n", find(d, 7));
+// 	printf("%d\n", find(d, 16));
+// 	printf("%d\n", find(d, 67));
+// 	printf("%d\n", find(d, 17));
 
 // 	inorder(d, d->root);
 

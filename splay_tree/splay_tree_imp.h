@@ -8,7 +8,9 @@ void* make_new_dictionary();
 // The first integer argument in the function call is the key and the second integer argument is the value to be inserted in the dictionary.
 void insert(void*, int, int);
 
-// Returns value if found else returns -1 
+// Returns value if found else returns -1
 int find(void*, int);
+
+int getCount();
 
 #endif

@@ -4,9 +4,9 @@
 #include<time.h>
 #include "dyntable_impl.h"
 
-static float decrease_factor = 0.25;
-double push_threshold_factor = 0.75;
-double pop_threshold_factor = 0.35;
+float decrease_factor = 0.25;
+double push_threshold_factor = 0.85;
+double pop_threshold_factor = 0.15;
 
 int copyCount = 0;
 
@@ -18,6 +18,8 @@ typedef struct dynamicTable {
 
 
 void* make_new_dynamic_table(int n) {
+	if (n == 0)
+		return NULL;
 	dynamicTable* dt = (dynamicTable*)malloc(sizeof(dynamicTable) + (sizeof(int) * n));
 	dt -> capacity = n;
 	dt -> size = 0;
@@ -30,17 +32,18 @@ void push_back(void **dt, int item) {
 	float threshold = Dt -> size / (float) Dt -> capacity;
 	if (threshold >= push_threshold_factor) {
 		//we need to increase by 1.5
+		int oldSize = Dt->size;
 		int curr_capacity = Dt -> capacity;
 		int newCapacity = ceil(curr_capacity * 1.5);
 		int size = Dt -> size;
 
-		dynamicTable* temp = realloc(Dt, sizeof(dynamicTable) + sizeof(int) * newCapacity);
+		dynamicTable* temp = realloc(Dt, sizeof(dynamicTable) + (sizeof(int) * newCapacity));
 		if (temp == NULL) {
 			//printf("unable to allocate memory on heap!\n");
 			return;
 		}
 		if (temp != Dt) // that means internally copy operation took place as there was no space to extend memory there
-			copyCount++;
+			copyCount += oldSize;
 		temp ->capacity = newCapacity;
 		temp ->size = size;
 
@@ -70,16 +73,16 @@ void pop_back(void**dt) {
 	float threshold = Dt -> size / (float) Dt -> capacity;
 
 	if (threshold <= pop_threshold_factor) {
-
+		int oldSize = Dt->size;
 		int size = Dt ->size;
 		int newCapacity  = ceil(1.5 * decrease_factor * Dt -> capacity);
-		dynamicTable *temp = realloc(Dt, sizeof(dynamicTable) + sizeof(int) * newCapacity);
+		dynamicTable *temp = realloc(Dt, sizeof(dynamicTable) + (sizeof(int) * newCapacity));
 		if (temp == NULL) {
 			//printf("unable to allocate memory on heap!\n");
 			return;
 		}
 		if (temp != Dt) // that means internally copy operation took place as there was no space to extend memory there
-			copyCount++;
+			copyCount += oldSize;
 
 		temp -> capacity = newCapacity;
 		temp ->size = size;
