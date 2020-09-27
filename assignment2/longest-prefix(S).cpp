@@ -30,8 +30,15 @@ int longestCommonPrefix(string s, int idx, int n) {
 	// 	cout << x << endl;
 	// }
 
-	// cout << (hash[2]*power[8]) % m << endl;
-	// cout << (hash[10] - hash[7]) % m << endl;
+	// cout << "TEST\n";
+	// cout << (hash[4]*power[21]) % m << endl;
+	// cout << (hash[25] - hash[20] + m) % m << endl;
+
+
+	// cout << endl;
+	// cout << endl;
+	// cout << endl;
+
 
 
 	bool left = false;
@@ -45,6 +52,8 @@ int longestCommonPrefix(string s, int idx, int n) {
 		high = n - 1;
 	}
 
+	//cout << "low: " << low << "high: " << high << endl;
+
 	int hash_main, hash_temp;
 	if (left) {
 		hash_main = 0;
@@ -57,10 +66,11 @@ int longestCommonPrefix(string s, int idx, int n) {
 	int maxLen = 0;
 	while (low <= high) {
 		int mid = low + (high - low) / 2; //to prevent overflow
+
 		if (left) {
-			cout << "mid:" << mid << endl;
+			//cout << "mid:" << mid << endl;
 			//cout<<(hash[1]-0)*power
-			if (((hash[mid] - hash_main)*power[idx]) % m  == (hash[mid + idx] - hash_temp) % m) {
+			if (((hash[mid] - hash_main)*power[idx]) % m  == (hash[mid + idx] - hash_temp + m) % m) {
 				maxLen = mid + 1;
 				low = mid + 1;
 			} else {
@@ -69,8 +79,10 @@ int longestCommonPrefix(string s, int idx, int n) {
 
 		}
 		else {
-			if ((hash[mid] - hash_main) % m == ((hash[mid - idx] - hash_temp)*power[idx]) % m) {
-				cout << "mid: " << mid << endl;
+			//cout << "mid:" << mid << endl;
+
+			if ((hash[mid] - hash_main + m) % m == ((hash[mid - idx] - hash_temp)*power[idx]) % m) {
+				//	cout << "mid: " << mid << endl;
 				maxLen = mid - idx + 1;
 				low = mid + 1;
 			} else {
