@@ -85,10 +85,10 @@ int countR(string p, string q, int n) {
 }
 int main()
 {
-#ifndef ONLINE_JUDGE
-	freopen("/media/akhil/Work/SEM-4/DS,CP/IO/input.txt", "r", stdin);
-	freopen("/media/akhil/Work/SEM-4/DS,CP/IO/output.txt", "w", stdout);
-#endif
+// #ifndef ONLINE_JUDGE
+// 	freopen("/media/akhil/Work/SEM-4/DS,CP/IO/input.txt", "r", stdin);
+// 	freopen("/media/akhil/Work/SEM-4/DS,CP/IO/output.txt", "w", stdout);
+// #endif
 
 
 	int n;
